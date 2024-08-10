@@ -1,0 +1,30 @@
+name: rspec
+
+on:
+  pull_request:
+    paths:
+      - 'lib/**'
+      - 'spec/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2.2"
+          bundler-cache: true
+
+      - name: bundle install
+        run: bundle install -j4
+
+      - name: run tests
+        run: bundle exec rspec
